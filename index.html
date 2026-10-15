@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vasu Yadav — ServiceNow Developer & Product Engineer. Ray-traced black hole portfolio hero." />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#12151c" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
+  <title>Vasu Yadav — ServiceNow Developer</title>
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/instrument-sans@latest/variable.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/fragment-mono@latest/400.css" />
+
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('profile-theme');
+        if (storedTheme === 'light' || storedTheme === 'dark') {
+          document.documentElement.setAttribute('data-theme', storedTheme);
+          var sws = document.querySelectorAll('.steel-toggle');
+          sws.forEach(function(sw) { sw.setAttribute('aria-checked', storedTheme === 'dark' ? 'true' : 'false'); });
+          return;
+        }
+      } catch (e) {}
+      var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      document.documentElement.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+    })();
+  </script>
+
+  <style>
+    :root, [data-theme="dark"] {
+      --bg: #12151c;
+      --ink: #eef1f7;
+      --text: #949eb0;
+      --mute: #6f7a8c;
+      --rule: rgba(255, 255, 255, 0.1);
+      --card: #1a1f2b;
+      --popover-bg: #1c2230;
+      --accent: #759bff;
+      --accent-hover: #9bb8ff;
+      --ray-idle: rgba(230, 235, 245, 0.17);
+      --ray-dim: rgba(230, 235, 245, 0.08);
+      --ray-highlight: #759bff;
+      --sans: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono: "Fragment Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      --body: 14.5px;
+      --small: 12.5px;
+      --col: 24.5rem;
+      --wide: 33rem;
+      --lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 24px -6px rgba(0, 0, 0, 0.55);
+    }
+    [data-theme="light"] {
+      --bg: #fafaf9;
+      --ink: #121214;
+      --text: #525158;
+      --mute: #74737a;
+      --rule: #e6e5e2;
+      --card: #f1f1ef;
+      --popover-bg: #ffffff;
+      --accent: #1c58d6;
+      --accent-hover: #123ea6;
+      --ray-idle: rgba(27, 26, 31, 0.16);
+      --ray-dim: rgba(27, 26, 31, 0.08);
+      --ray-highlight: #1c58d6;
+      --lift: 0 1px 1px #1010140f, 0 10px 18px -6px #10101429, 0 28px 44px -16px #1010144d;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scrollbar-gutter: stable;
+      overflow-x: clip;
+      -webkit-text-size-adjust: 100%;
+      color-scheme: dark light;
+    }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: var(--body);
+      font-weight: 450;
+      line-height: 1.58;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-variant-numeric: tabular-nums;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    ::selection { background: var(--accent); color: #fff; }
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    em, strong, .ink { font-style: normal; font-weight: 550; color: var(--ink); }
+    a { color: inherit; text-decoration: none; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+      white-space: nowrap; border: 0;
+    }
+    .skip-link {
+      position: absolute; top: -100px; left: 16px; z-index: 100;
+      background: var(--popover-bg); color: var(--ink);
+      border: 2px solid var(--accent); padding: 6px 12px;
+      border-radius: 6px; font-size: var(--small);
+    }
+    .skip-link:focus { top: 14px; }
+    .page {
+      width: min(var(--col), 100% - 3rem);
+      margin-inline: auto;
+      padding-block-end: 84px;
+    }
+    .wide {
+      --w: min(var(--wide), 100vw - 2rem);
+      width: var(--w);
+      margin-inline: calc((100% - var(--w)) / 2);
+    }
+    .hero-hole {
+      margin-block-start: -18px;
+      margin-block-end: 22px;
+      container-type: inline-size;
+    }
+    .blackhole-object {
+      z-index: 30; width: 100%; line-height: 0; position: relative;
+      cursor: grab; touch-action: pan-y; overscroll-behavior: contain;
+      user-select: none; -webkit-user-select: none;
+      transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--rot, 0deg));
+      will-change: transform;
+    }
+    .blackhole-object.dragging { cursor: grabbing; z-index: 41; }
+    body.is-grabbing { user-select: none; -webkit-user-select: none; }
+    .blackhole-object canvas {
+      aspect-ratio: 560 / 347;
+      width: 100%; height: auto; display: block;
+    }
+    .blackhole-object .bh-rays {
+      pointer-events: none; height: 100%; position: absolute; inset: 0;
+      -webkit-mask-image: radial-gradient(50% 50%, #000 58%, #0000 100%);
+      mask-image: radial-gradient(50% 50%, #000 58%, #0000 100%);
+    }
+    .hole-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-block-start: 4px; min-height: 1.6em;
+    }
+    .hole-caption {
+      text-align: center; font-family: var(--mono);
+      font-size: 11.5px; letter-spacing: 0.02em; color: var(--mute);
+    }
+    .bh-readout.is-live { color: var(--accent); }
+    @container (max-width: 26rem) {
+      .hole-caption { font-size: 10.5px; letter-spacing: 0.01em; }
+    }
+    .preset-cycle {
+      appearance: none; background: transparent;
+      border: 1px solid var(--rule); color: var(--mute);
+      font-family: var(--mono); font-size: 10.5px;
+      padding: 1px 7px; border-radius: 999px; cursor: pointer;
+      min-height: 22px;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .preset-cycle:hover { color: var(--ink); border-color: var(--accent); }
+
+    .profile-header {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-block-end: 30px;
+    }
+    .identity-group {
+      display: flex; flex-direction: column; gap: 2px; width: 100%;
+    }
+    .identity-group h1 {
+      color: var(--ink); font-size: 15.5px; font-weight: 600;
+      letter-spacing: -0.01em; line-height: 1.35; text-wrap: balance;
+    }
+    .identity-group .role-subtitle {
+      color: var(--text); font-size: 14px; font-weight: 430;
+      line-height: 1.35; margin-block-start: 2px;
+    }
+    .availability {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-block-start: 10px; font-size: var(--small); color: var(--mute);
+    }
+    .availability .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4ade80; box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
+      flex-shrink: 0;
+    }
+    .action-row {
+      display: flex; justify-content: space-between; align-items: center; width: 100%; margin-block-start: 12px;
+    }
+    .inbox-link {
+      color: var(--accent); font-weight: 500; font-size: var(--body);
+      transition: color 0.15s ease;
+    }
+    .inbox-link:hover { color: var(--accent-hover); }
+
+    .steel-toggle {
+      appearance: none; -webkit-appearance: none;
+      background: transparent; border: none; padding: 6px;
+      cursor: pointer; display: inline-flex;
+      align-items: center; justify-content: center;
+      border-radius: 999px; min-width: 44px; min-height: 36px;
+      color: inherit; flex-shrink: 0;
+    }
+    .steel-toggle-track {
+      display: inline-flex; align-items: center; gap: 6px; position: relative;
+    }
+    .steel-pip {
+      width: 5px; height: 5px; border-radius: 50%;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s ease;
+    }
+    .steel-knob {
+      width: 19px; height: 19px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      position: relative;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                  background-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    [data-theme="dark"] .steel-pip { background-color: #8c96a8; order: 1; }
+    [data-theme="dark"] .steel-knob {
+      background-color: #eef1f7; color: #12151c; order: 2;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+    [data-theme="light"] .steel-knob {
+      background-color: #161922; color: #fafaf9; order: 1;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    [data-theme="light"] .steel-pip { background-color: #9ba3b5; order: 2; }
+    .steel-knob svg {
+      width: 11px; height: 11px; position: absolute;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .steel-knob .knob-dot { opacity: 1; transform: scale(1); }
+    .steel-knob .knob-arrow-left, .steel-knob .knob-arrow-right { opacity: 0; transform: scale(0.75); }
+    .steel-toggle:hover .knob-dot, .steel-toggle:focus-visible .knob-dot { opacity: 0; transform: scale(0.5); }
+    [data-theme="dark"] .steel-toggle:hover .knob-arrow-left,
+    [data-theme="dark"] .steel-toggle:focus-visible .knob-arrow-left { opacity: 1; transform: scale(1); }
+    [data-theme="light"] .steel-toggle:hover .knob-arrow-right,
+    [data-theme="light"] .steel-toggle:focus-visible .knob-arrow-right { opacity: 1; transform: scale(1); }
+
+    .prose {
+      container-type: inline-size;
+      display: flex; flex-direction: column; gap: 18px; margin-block-end: 34px;
+    }
+    .prose p { margin: 0; text-wrap: pretty; }
+    .section-label {
+      font-family: var(--mono); font-size: 11px; color: var(--mute);
+      text-transform: lowercase; letter-spacing: 0.05em;
+      margin-block-end: 4px; display: block;
+    }
+    .name { position: relative; display: inline-block; }
+    .name-btn {
+      padding: 0; border: 0; background: none;
+      font: inherit; font-weight: 600; color: var(--ink); cursor: pointer;
+    }
+    .name-def {
+      position: absolute; left: -8px; top: calc(100% + 12px);
+      z-index: 45; display: grid; gap: 3px;
+      width: min(255px, 82vw); padding: 12px 14px 13px; border-radius: 12px;
+      background: var(--popover-bg); border: 1px solid var(--rule);
+      box-shadow: var(--lift); font-size: var(--small); font-weight: 430;
+      line-height: 1.5; color: var(--text); text-align: start; white-space: normal;
+      transform-origin: 24px -6px;
+    }
+    .name-def[hidden] { display: none; }
+    .name-def::before {
+      content: ""; position: absolute; left: 20px; top: -6px;
+      width: 10px; height: 10px; background: var(--popover-bg);
+      border-top: 1px solid var(--rule); border-left: 1px solid var(--rule);
+      transform: rotate(45deg); border-radius: 2px;
+    }
+    @supports (transition-behavior: allow-discrete) {
+      .name-def {
+        transition: opacity 0.17s ease, transform 0.17s cubic-bezier(0.2, 0.9, 0.25, 1);
+        transform-origin: 24px -6px;
+      }
+      @starting-style {
+        .name-def:not([hidden]) {
+          opacity: 0;
+          transform: translateY(-4px) scale(0.97);
+        }
+      }
+    }
+    .nd-head { display: flex; align-items: center; gap: 6px; font-size: var(--body); text-wrap: balance; }
+    .nd-say { font-family: var(--mono); font-size: 11.5px; color: var(--mute); }
+
+    .connect-links {
+      display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--body);
+    }
+    .connect-links a {
+      color: var(--accent); font-weight: 500; transition: color 0.15s ease;
+    }
+    .connect-links a:hover { color: var(--accent-hover); }
+    .connect-sep { color: var(--mute); }
+
+    .site-footer {
+      margin-block-start: 48px;
+      padding-block-start: 24px;
+      border-block-start: 1px solid var(--rule);
+      font-size: var(--small);
+      color: var(--mute);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .site-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      .availability { flex-wrap: wrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body, .steel-pip, .steel-knob, .steel-knob svg,
+      .preset-cycle, .connect-links a, .inbox-link,
+      .name-def { transition: none !important; }
+      .gw { will-change: auto; }
+    }
+
+    @media (prefers-contrast: more) {
+      :root, [data-theme="dark"] {
+        --text: #c5cee0; --mute: #9aa6ba;
+        --ray-idle: rgba(230, 235, 245, 0.32);
+        --ray-dim: rgba(230, 235, 245, 0.18);
+      }
+      [data-theme="light"] {
+        --text: #2f2e35; --mute: #4a4950;
+        --ray-idle: rgba(27, 26, 31, 0.32);
+        --ray-dim: rgba(27, 26, 31, 0.18);
+      }
+    }
+
+    @media (forced-colors: active) {
+      .name-btn, .bh-readout.is-live, .connect-links a, .inbox-link { color: LinkText; }
+      .preset-cycle, .steel-toggle { border-color: ButtonText; color: ButtonText; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#hero" class="skip-link">Skip to main content</a>
+
+  <main class="page" id="hero">
+    <section class="wide hero-hole" aria-label="A ray-traced black hole">
+      <p class="sr-only">
+        Animated ray-traced black hole. Light paths bend around it; point at it to trace your own ray, or drag it toward the words below and they fall in. Release and it returns.
+      </p>
+      <div
+        class="blackhole-object"
+        id="bh-object"
+        data-look="zen"
+        data-return
+        style="--rot:0deg;--dx:0px;--dy:0px"
+        role="img"
+        aria-label="Ray-traced black hole. Point at it to trace your own light ray; drag it toward the words below and they fall in; let go and it returns."
+      >
+        <canvas class="bh-rays" id="bh-rays" aria-hidden="true" focusable="false" width="720" height="446"></canvas>
+        <canvas id="bh-canvas" aria-hidden="true" focusable="false" width="1400" height="868"></canvas>
+      </div>
+      <div class="hole-bar">
+        <p class="hole-caption">
+          <span class="bh-readout" id="bh-readout" aria-live="polite" data-idle="TON 618 · DRAG EVENT HORIZON">TON 618 · DRAG EVENT HORIZON</span>
+        </p>
+        <button type="button" class="preset-cycle" id="preset-btn" title="Cycle relativistic accretion disk preset" aria-label="Cycle black hole look preset, currently zen">
+          look: zen
+        </button>
+      </div>
+    </section>
+
+    <header class="profile-header">
+      <div class="identity-group">
+        <h1>
+          Hi, I'm
+          <span class="gw name" data-name>
+            <button class="name-btn" type="button" aria-expanded="false" aria-controls="name-def">
+              Vasu Yadav
+            </button>
+            <span class="name-def" id="name-def" role="note" hidden>
+              <span class="nd-head">
+                <span class="ink">Vasu Yadav</span>
+                <span class="nd-say">/ˈvɑsuː ˈjɑdʌv/</span>
+              </span>
+              <span class="nd-body">
+                ServiceNow Developer based in Hyderabad, India. Drag the black hole singularity above over the text to test real-time gravitational lensing.
+              </span>
+            </span>
+          </span>
+        </h1>
+        <p class="role-subtitle">ServiceNow Developer</p>
+        <p class="availability">
+          <span class="dot" aria-hidden="true"></span>
+          <span>Available for opportunities →</span>
+        </p>
+        <div class="action-row">
+          <a href="mailto:kvvasuyadav0@gmail.com?subject=Opportunity%20for%20Vasu" class="inbox-link">Inbox</a>
+          <button
+            type="button"
+            class="steel-toggle"
+            role="switch"
+            aria-checked="true"
+            aria-label="Dark theme enabled. Switch to light theme"
+            title="Toggle dark or light theme"
+          >
+            <span class="steel-toggle-track" aria-hidden="true">
+              <span class="steel-pip"></span>
+              <span class="steel-knob">
+                <svg class="knob-dot" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="2.5" /></svg>
+                <svg class="knob-arrow-left" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9.5 6H2.5" /><path d="M5.5 3L2.5 6L5.5 9" />
+                </svg>
+                <svg class="knob-arrow-right" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.5 6H9.5" /><path d="M6.5 3L9.5 6L6.5 9" />
+                </svg>
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section class="prose" data-gravity aria-label="Biography">
+      <div>
+        <span class="section-label">/now</span>
+        <p>Building and improving ServiceNow solutions</p>
+        <p>Focused on ITSM, ITOM, CMDB, and HRSD</p>
+      </div>
+      <div>
+        <span class="section-label">/connect</span>
+        <div class="connect-links">
+          <a href="mailto:kvvasuyadav0@gmail.com">Email</a>
+          <span class="connect-sep">·</span>
+          <a href="/resume.pdf" download>Resume</a>
+          <span class="connect-sep">·</span>
+          <a href="https://linkedin.com/in/kvvasu" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <span>© 2026 Vasu Yadav</span>
+      <span>Hyderabad, India</span>
+    </footer>
+  </main>
+
+  <script type="module">
+    const docRoot = document.documentElement;
+    const themeToggles = document.querySelectorAll(".steel-toggle");
+    const presetBtn = document.getElementById("preset-btn");
+
+    const THEME_KEY = "profile-theme";
+
+    function getStored(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+    function setStored(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+
+    function syncThemeUI(theme) {
+      const isDark = theme === "dark";
+      docRoot.setAttribute("data-theme", theme);
+      themeToggles.forEach(toggle => {
+        toggle.setAttribute("aria-checked", isDark ? "true" : "false");
+        toggle.setAttribute("aria-label",
+          isDark ? "Dark theme enabled. Switch to light theme" : "Light theme enabled. Switch to dark theme");
+      });
+    }
+
+    syncThemeUI(docRoot.getAttribute("data-theme") || "dark");
+    themeToggles.forEach(toggle => {
+      toggle.addEventListener("click", () => {
+        const current = docRoot.getAttribute("data-theme") === "light" ? "light" : "dark";
+        const next = current === "dark" ? "light" : "dark";
+        syncThemeUI(next);
+        setStored(THEME_KEY, next);
+        hero?.redrawRays();
+      });
+    });
+
+    const VERT_SRC = `attribute vec2 a_pos; void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
+
+    const FRAG_SRC =
+`precision highp float;
+uniform vec2 u_res;
+uniform float u_time;
+uniform float DISK_TEMP, DISK_INCL, DISK_ROLL, DISK_INNER, DISK_OUTER, DISK_OPAC,
+              DOPPLER_MIX, DISK_BEAM, DISK_GAIN, DISK_CONTR, DISK_WIND, DISK_SPEED,
+              EXPOSURE, STAR_GAIN;
+const float B_CRIT      = 2.5980762;
+const float SHADOW_FRAC = 0.17;
+const float Z0          = 30.0;
+int   N_STEPS     = 170;
+float hash21(vec2 p) {
+  p = fract(p * vec2(234.34, 435.345));
+  p += dot(p, p + 34.345);
+  return fract(p.x * p.y);
+}
+float vnoiseWrapY(vec2 p, float perY) {
+  vec2 i = floor(p), f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  float y0 = mod(i.y, perY), y1 = mod(i.y + 1.0, perY);
+  return mix(mix(hash21(vec2(i.x, y0)), hash21(vec2(i.x + 1.0, y0)), f.x),
+             mix(hash21(vec2(i.x, y1)), hash21(vec2(i.x + 1.0, y1)), f.x), f.y);
+}
+float wrapAng(float a) { return mod(a + 3.14159265, 6.2831853) - 3.14159265; }
+vec2 rot(vec2 v, float a) {
+  float c = cos(a), s = sin(a);
+  return vec2(c * v.x - s * v.y, s * v.x + c * v.y);
+}
+vec3 blackbody(float T) {
+  float t = clamp(T, 1500.0, 40000.0) / 100.0;
+  float r = t <= 66.0 ? 1.0 : clamp(1.292936 * pow(t - 60.0, -0.1332047), 0.0, 1.0);
+  float g = t <= 66.0 ? clamp(0.3900816 * log(t) - 0.6318414, 0.0, 1.0)
+                      : clamp(1.1298909 * pow(t - 60.0, -0.0755148), 0.0, 1.0);
+  float b = t >= 66.0 ? 1.0 : (t <= 19.0 ? 0.0 : clamp(0.5432068 * log(t - 10.0) - 1.1962540, 0.0, 1.0));
+  return vec3(r, g, b);
+}
+void main() {
+  vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+  float rh = SHADOW_FRAC;
+  vec2 pr = rot(p / rh * B_CRIT, DISK_ROLL);
+  float t = u_time;
+  vec3 x = vec3(pr, Z0);
+  vec3 v = vec3(0.0, 0.0, -1.0);
+  float h2 = dot(pr, pr);
+  float ci = cos(DISK_INCL), si = sin(DISK_INCL);
+  vec3 n  = vec3(0.0, si, ci);
+  vec3 e2 = vec3(0.0, ci, -si);
+  vec3 emitc = vec3(0.0);
+  float trans = 1.0;
+  bool captured = false;
+  float sPrev = dot(x, n);
+  vec3 xPrev = x;
+  for (int i = 0; i < N_STEPS; i++) {
+    float r2 = dot(x, x);
+    if (r2 < 1.0) { captured = true; break; }
+    if (x.z < -Z0 && v.z < 0.0) break;
+    if (r2 > 4.0 * Z0 * Z0) break;
+    float r = sqrt(r2);
+    float dt = clamp(0.08 * r, 0.015, 0.8);
+    vec3 a = -1.5 * h2 * x / (r2 * r2 * r);
+    v += a * (0.5 * dt);
+    x += v * dt;
+    r2 = dot(x, x); r = sqrt(r2);
+    a = -1.5 * h2 * x / (r2 * r2 * r);
+    v += a * (0.5 * dt);
+    float sd = dot(x, n);
+    if (sd * sPrev < 0.0 && trans > 0.02) {
+      float tc = sPrev / (sPrev - sd);
+      vec3 xc = mix(xPrev, x, tc);
+      float rc = length(xc);
+      if (rc > DISK_INNER && rc < DISK_OUTER) {
+        float band = smoothstep(DISK_INNER, DISK_INNER * 1.25, rc) * (1.0 - smoothstep(DISK_OUTER * 0.70, DISK_OUTER, rc));
+        float phi   = atan(dot(xc, e2), xc.x);
+        float turns = phi / 6.2831853;
+        float kep   = pow(DISK_INNER / rc, 1.5);
+        float gloc  = sqrt(max(1.0 - 1.5 / rc, 0.02));
+        float swirl = rc * DISK_WIND * 0.12 - t * kep * DISK_SPEED * gloc;
+        float streaks = vnoiseWrapY(vec2(rc * 2.8, turns * 19.0 + swirl * 3.0), 19.0) * 0.65
+                      + vnoiseWrapY(vec2(rc * 1.0, turns * 9.0 + swirl * 1.5 + 7.0), 9.0) * 0.35;
+        streaks = 0.35 + DISK_CONTR * streaks * streaks;
+        float r1 = DISK_INNER * 1.25, rr2 = DISK_INNER * 1.75;
+        float w1 = pow(DISK_INNER / r1, 1.5) * DISK_SPEED * sqrt(max(1.0 - 1.5 / r1, 0.02));
+        float w2 = pow(DISK_INNER / rr2, 1.5) * DISK_SPEED * sqrt(max(1.0 - 1.5 / rr2, 0.02));
+        float da1 = wrapAng(phi - t * w1 - 0.6), dr1 = rc - r1;
+        float da2 = wrapAng(phi - t * w2 + 2.4), dr2 = rc - rr2;
+        streaks += 2.6 * exp(-(da1 * da1 / 0.05 + dr1 * dr1 / 0.10));
+        streaks += 1.8 * exp(-(da2 * da2 / 0.08 + dr2 * dr2 / 0.14));
+        vec3 gasdir = normalize(cross(n, xc));
+        float beta  = clamp(inversesqrt(max(2.0 * (rc - 1.0), 0.2)), 0.0, 0.99);
+        float g     = gloc / max(1.0 + beta * dot(gasdir, normalize(v)), 0.05);
+        g = mix(1.0, g, DOPPLER_MIX);
+        float xpr   = max(1.0 - sqrt(DISK_INNER / rc), 0.0);
+        float tprof = pow(DISK_INNER / rc, 0.75) * pow(xpr, 0.25) / 0.488;
+        vec3 cbb    = blackbody(DISK_TEMP * tprof * g);
+        float boost = pow(g, DISK_BEAM);
+        float density = band * streaks;
+        emitc += trans * cbb * (DISK_GAIN * 2.2 * density * tprof * tprof * boost);
+        trans *= 1.0 - clamp(DISK_OPAC * density, 0.0, 1.0);
+      }
+    }
+    sPrev = sd;
+    xPrev = x;
+  }
+  if (!captured && dot(x, x) < 4.0) captured = true;
+  vec3 hdr = emitc * EXPOSURE;
+  float e = max(hdr.r, max(hdr.g, hdr.b));
+  float density = clamp(1.0 - trans, 0.0, 1.0);
+  vec3 inkDeep = vec3(0.12, 0.17, 0.55);
+  vec3 inkMid  = vec3(0.30, 0.46, 0.94);
+  vec3 tone = vec3(1.0) - exp(-hdr);
+  float hot = clamp(e * 0.9, 0.0, 1.0);
+  vec3 col = mix(inkDeep, inkMid, smoothstep(0.0, 0.5, hot));
+  col = mix(col, tone * vec3(0.86, 0.93, 1.0) + vec3(0.1, 0.12, 0.2), smoothstep(0.35, 1.2, hot));
+  float alpha = captured ? 1.0 : clamp(max(density * 1.7, hot * 1.0), 0.0, 1.0);
+  if (captured) col = vec3(0.0) + tone * 0.9;
+  gl_FragColor = vec4(col * alpha, alpha);
+}`;
+
+    const PRESETS = {
+      defaults:  { DISK_TEMP: 5500,  DISK_INCL: 1.5,  DISK_ROLL: 0.35, DISK_INNER: 1.8, DISK_OUTER: 8,  DISK_OPAC: 0.9,  DOPPLER_MIX: 0.6,  DISK_BEAM: 2.5, DISK_GAIN: 2.2, DISK_CONTR: 1.6, DISK_WIND: 7, DISK_SPEED: 5,   EXPOSURE: 1.4, STAR_GAIN: 0 },
+      zen:       { DISK_TEMP: 7000,  DISK_INCL: 1.45, DISK_ROLL: 0.15, DISK_INNER: 3.5, DISK_OUTER: 7,  DISK_OPAC: 0.4,  DOPPLER_MIX: 0.5,  DISK_BEAM: 2,   DISK_GAIN: 0.5, DISK_CONTR: 1.2, DISK_WIND: 3, DISK_SPEED: 3.5, EXPOSURE: 0.7, STAR_GAIN: 0 },
+      quasar:    { DISK_TEMP: 15000, DISK_INCL: 1.3,  DISK_ROLL: 0.35, DISK_INNER: 3,   DISK_OUTER: 14, DISK_OPAC: 0.35, DOPPLER_MIX: 1,    DISK_BEAM: 4,   DISK_GAIN: 1.2, DISK_CONTR: 1.3, DISK_WIND: 8, DISK_SPEED: 5,   EXPOSURE: 0.8, STAR_GAIN: 0 },
+      gargantua: { DISK_TEMP: 4500,  DISK_INCL: 1.52, DISK_ROLL: 0.1,  DISK_INNER: 2.2, DISK_OUTER: 7,  DISK_OPAC: 0.85, DOPPLER_MIX: 0.35, DISK_BEAM: 2,   DISK_GAIN: 1.4, DISK_CONTR: 0.5, DISK_WIND: 7, DISK_SPEED: 5,   EXPOSURE: 1.2, STAR_GAIN: 0 }
+    };
+    const PT = 1.5 * Math.sqrt(3);
+    const B_CRIT = 2.5980762;
+    const SHADOW_FRAC = 0.17;
+    const WEBGL_SUPERSAMPLE = 1.25;
+    const DPR_CAP = 2;
+    const GM_PULL = 30 * 300 * 300;
+    const GW_DAMP = 2.2;
+    const GW_MAX_SPEED = 1400;
+
+    function traceGeodesic(impactB) {
+      let px = -14, py = impactB, vx = 1, vy = 0;
+      const h2 = impactB * impactB;
+      const pts = [[px, py]];
+      let captured = false;
+      for (let step = 0; step < 12000; step++) {
+        const rad = Math.hypot(px, py);
+        if (rad < 1.02) { captured = true; break; }
+        if (rad > 14 * 1.6 && px > 0) break;
+        const dt = Math.min(0.12, Math.max(0.004, 0.02 * rad));
+        let r5 = rad ** 5;
+        vx += -1.5 * h2 * px / r5 * dt * 0.5;
+        vy += -1.5 * h2 * py / r5 * dt * 0.5;
+        px += vx * dt; py += vy * dt;
+        r5 = Math.hypot(px, py) ** 5;
+        vx += -1.5 * h2 * px / r5 * dt * 0.5;
+        vy += -1.5 * h2 * py / r5 * dt * 0.5;
+        pts.push([px, py]);
+      }
+      const deflect = captured ? 0 : Math.abs(Math.atan2(vy, vx)) * 180 / Math.PI;
+      return { pts, captured, deflect };
+    }
+    const RAY_FAN = [-8, -6, -4.6, -2.1, -0.9, 0.9, 2.1, 4.6, 6, 8].map(b => ({ b, ...traceGeodesic(b) }));
+
+    function splitWords(container) {
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const owner = node.parentElement;
+          if (!owner || owner.closest(".gw, .pill, svg, script, style, .desk-object, img, .connect-links, .steel-toggle, .preset-cycle, .name-btn, .name-def, .action-row")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return node.nodeValue && node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        }
+      });
+      const targets = [];
+      while (walker.nextNode()) targets.push(walker.currentNode);
+      for (const textNode of targets) {
+        const frag = document.createDocumentFragment();
+        for (const token of (textNode.nodeValue || "").split(/(\s+)/)) {
+          if (!token) continue;
+          if (/^\s+$/.test(token)) { frag.appendChild(document.createTextNode(token)); continue; }
+          const wordSpan = document.createElement("span");
+          wordSpan.className = "gw";
+          wordSpan.textContent = token;
+          frag.appendChild(wordSpan);
+        }
+        let prev = textNode.previousSibling;
+        while (prev instanceof HTMLScriptElement || prev instanceof HTMLStyleElement) prev = prev.previousSibling;
+        const first = frag.firstChild;
+        if (prev instanceof HTMLElement && first instanceof HTMLElement && /^[,.;:!?')]/.test(first.textContent || "")) {
+          const keep = document.createElement("span");
+          keep.className = "gw-keep";
+          prev.replaceWith(keep);
+          keep.append(prev, first);
+        }
+        textNode.parentNode.replaceChild(frag, textNode);
+      }
+    }
+
+    function initBlackHoleHero(root, opts = {}) {
+      const cfg = {
+        look: opts.look || "zen",
+        interactive: opts.interactive !== false,
+        gravityWords: opts.gravityWords !== false,
+        dragReturn: opts.dragReturn !== false,
+        captionIdle: opts.captionIdle ?? "TON 618 · DRAG EVENT HORIZON",
+        ...opts
+      };
+      const objectEl   = root.querySelector(".blackhole-object");
+      const glCanvas   = root.querySelector("#bh-canvas") || root.querySelector("canvas:not(.bh-rays)");
+      const raysCanvas = root.querySelector(".bh-rays");
+      const readout    = root.querySelector(".bh-readout");
+      const gravityEls = Array.from(root.querySelectorAll("[data-gravity]"));
+      if (!objectEl || !glCanvas || !raysCanvas) return null;
+
+      const reduceMQ = matchMedia("(prefers-reduced-motion: reduce)");
+
+      function getRayColors() {
+        const styles = getComputedStyle(docRoot);
+        return {
+          idle: styles.getPropertyValue("--ray-idle").trim() || "rgba(148,158,176,0.22)",
+          dim:  styles.getPropertyValue("--ray-dim").trim()       || "rgba(148,158,176,0.09)",
+          hi:   styles.getPropertyValue("--ray-highlight").trim() || "#759bff"
+        };
+      }
+
+      readout.dataset.idle = cfg.captionIdle;
+      readout.textContent = cfg.captionIdle;
+
+      const nameWrap = root.querySelector(".name");
+      const nameBtn  = nameWrap?.querySelector(".name-btn");
+      const nameDef  = nameWrap?.querySelector(".name-def");
+      const listeners = [];
+      const on = (target, type, fn, options) => {
+        target.addEventListener(type, fn, options);
+        listeners.push([target, type, fn, options]);
+      };
+
+      if (nameBtn && nameDef) {
+        const setDef = open => {
+          nameDef.hidden = !open;
+          nameBtn.setAttribute("aria-expanded", String(open));
+          nameWrap.classList.toggle("is-open", open);
+        };
+        on(nameBtn, "click", ev => { ev.stopPropagation(); setDef(nameDef.hidden); });
+        on(document, "click", ev => { if (!nameDef.hidden && !nameWrap.contains(ev.target)) setDef(false); });
+        on(document, "keydown", ev => {
+          if (ev.key === "Escape" && !nameDef.hidden) { setDef(false); nameBtn.focus(); }
+        });
+      }
+
+      let words = [];
+      const measureWords = () => {
+        for (const w of words) { w.el.style.transform = ""; w.el.style.opacity = ""; }
+        words = [];
+        if (!cfg.gravityWords) return;
+        for (const section of gravityEls) {
+          section.querySelectorAll(".gw").forEach(el => {
+            const box = el.getBoundingClientRect();
+            if (box.width === 0) return;
+            words.push({
+              el, cx: box.left + box.width / 2 + scrollX, cy: box.top + box.height / 2 + scrollY,
+              x: 0, y: 0, vx: 0, vy: 0, rot: 0, spin: 0, sx: 1, sy: 1, op: 1,
+              captured: false, active: false
+            });
+          });
+        }
+      };
+      if (cfg.gravityWords) {
+        gravityEls.forEach(splitWords);
+        measureWords();
+        document.fonts?.ready?.then(measureWords);
+      }
+
+      const gl = glCanvas.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false });
+      let program = null, uTime = null, uRes = null;
+      if (gl) {
+        const compile = (type, src) => {
+          const sh = gl.createShader(type);
+          gl.shaderSource(sh, src); gl.compileShader(sh);
+          if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) return null;
+          return sh;
+        };
+        const vs = compile(gl.VERTEX_SHADER, VERT_SRC);
+        const fs = compile(gl.FRAGMENT_SHADER, FRAG_SRC);
+        if (vs && fs) {
+          program = gl.createProgram();
+          gl.attachShader(program, vs); gl.attachShader(program, fs);
+          gl.linkProgram(program); gl.useProgram(program);
+          const buf = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+          const loc = gl.getAttribLocation(program, "a_pos");
+          gl.enableVertexAttribArray(loc);
+          gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+          uploadLook(cfg.look);
+          uRes  = gl.getUniformLocation(program, "u_res");
+          uTime = gl.getUniformLocation(program, "u_time");
+          gl.clearColor(0, 0, 0, 0);
+        }
+      }
+      function uploadLook(lookName) {
+        if (!gl || !program) return;
+        const preset = PRESETS[lookName] || PRESETS.zen;
+        gl.useProgram(program);
+        for (const [key, val] of Object.entries(preset)) {
+          const u = gl.getUniformLocation(program, key);
+          if (u) gl.uniform1f(u, val);
+        }
+      }
+      if (!gl || !program) objectEl.hidden = true;
+
+      let cssW = 0, cssH = 0;
+      const rayCtx = raysCanvas.getContext("2d");
+      function sizeCanvases() {
+        const box = glCanvas.getBoundingClientRect();
+        cssW = box.width; cssH = box.height;
+        if (!cssW || !cssH) return;
+        if (gl && program) {
+          const ss = Math.min(devicePixelRatio || 1, DPR_CAP) * WEBGL_SUPERSAMPLE;
+          glCanvas.width  = Math.round(cssW * ss);
+          glCanvas.height = Math.round(cssH * ss);
+          gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+          gl.uniform2f(uRes, glCanvas.width, glCanvas.height);
+        }
+        const dpr = Math.min(devicePixelRatio || 1, DPR_CAP);
+        raysCanvas.width  = Math.round(cssW * dpr);
+        raysCanvas.height = Math.round(cssH * dpr);
+        rayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      const rayScale = () => SHADOW_FRAC * cssH / B_CRIT;
+
+      let highlight = null;
+      function drawRays() {
+        if (!rayCtx || !cssW) return;
+        rayCtx.clearRect(0, 0, cssW, cssH);
+        const l = rayScale(), cx = cssW / 2, cy = cssH / 2;
+        const colors = getRayColors();
+        const stroke = pts => {
+          rayCtx.beginPath();
+          pts.forEach(([X, Y], idx) =>
+            idx ? rayCtx.lineTo(cx + X * l, cy - Y * l) : rayCtx.moveTo(cx + X * l, cy - Y * l));
+        };
+        rayCtx.lineWidth = 1;
+        rayCtx.strokeStyle = highlight ? colors.dim : colors.idle;
+        RAY_FAN.forEach(ray => stroke(ray.pts));
+        if (highlight) {
+          rayCtx.lineWidth = 1.6;
+          rayCtx.strokeStyle = colors.hi;
+          stroke(highlight.pts);
+        }
+      }
+
+      function setIdleCaption() {
+        highlight = null;
+        readout.textContent = readout.dataset.idle || "";
+        readout.classList.remove("is-live");
+        drawRays();
+      }
+
+      let pendingY = null, highlightQueued = false;
+      function queueHighlight(clientY) {
+        pendingY = clientY;
+        if (highlightQueued) return;
+        highlightQueued = true;
+        requestAnimationFrame(() => {
+          highlightQueued = false;
+          if (pendingY === null) return;
+          const box = glCanvas.getBoundingClientRect();
+          const l = rayScale();
+          const v = -((pendingY - (box.top + box.height / 2)) / l);
+          if (Math.abs(v) > 7.5) { setIdleCaption(); return; }
+          highlight = { b: v, ...traceGeodesic(v) };
+          readout.classList.add("is-live");
+          readout.textContent = highlight.captured
+            ? `b = ${Math.abs(v).toFixed(2)} rₛ < b꜀ = ${PT.toFixed(2)} rₛ · captured`
+            : `b = ${Math.abs(v).toFixed(2)} rₛ · escapes, bent ${highlight.deflect.toFixed(0)}°`;
+          drawRays();
+        });
+      }
+
+      const SPRING_W = 2 * Math.sqrt(60) * 0.62;
+      let dragging = false, dragMoved = false, returnRaf = 0;
+      let startX = 0, startY = 0, baseX = 0, baseY = 0;
+      let lastPX = 0, lastPY = 0, lastPT = 0, velX = 0, velY = 0, dropTimer = 0;
+      const readOffset  = () => [parseFloat(objectEl.style.getPropertyValue("--dx")) || 0, parseFloat(objectEl.style.getPropertyValue("--dy")) || 0];
+      const writeOffset = (x, y) => { objectEl.style.setProperty("--dx", `${x}px`); objectEl.style.setProperty("--dy", `${y}px`); };
+
+      function returnSpring() {
+        let [tx, ty] = readOffset();
+        if (reduceMQ.matches) { writeOffset(0, 0); return; }
+        let ax = 0, ay = 0, prev = performance.now();
+        const step = now => {
+          const dt = Math.min(0.032, (now - prev) / 1e3); prev = now;
+          ax += (-60 * tx - SPRING_W * ax) * dt;
+          ay += (-60 * ty - SPRING_W * ay) * dt;
+          tx += ax * dt; ty += ay * dt;
+          writeOffset(tx, ty);
+          if (Math.hypot(tx, ty) > 0.3 || Math.hypot(ax, ay) > 2) returnRaf = requestAnimationFrame(step);
+          else { writeOffset(0, 0); returnRaf = 0; }
+        };
+        returnRaf = requestAnimationFrame(step);
+      }
+
+      let engaged = false;
+      on(objectEl, "pointerdown", ev => {
+        if (ev.pointerType === "mouse" && ev.button !== 0) return;
+        engaged = true;
+        if (returnRaf) { cancelAnimationFrame(returnRaf); returnRaf = 0; }
+        dragging = true; dragMoved = false;
+        startX = lastPX = ev.clientX; startY = lastPY = ev.clientY; lastPT = performance.now();
+        [baseX, baseY] = readOffset(); velX = velY = 0;
+        objectEl.setPointerCapture(ev.pointerId);
+        objectEl.classList.add("dragging");
+        document.body.classList.add("is-grabbing");
+        setIdleCaption();
+        kick();
+      });
+
+      on(objectEl, "pointermove", ev => {
+        if (cfg.interactive && !dragging) queueHighlight(ev.clientY);
+        if (!dragging) return;
+        const box = objectEl.getBoundingClientRect();
+        const vw = document.documentElement.clientWidth;
+        let nx = Math.min(Math.max(ev.clientX - startX, 8 - box.left), vw - 8 - box.right);
+        let ny = Math.max(ev.clientY - startY, -(box.top + scrollY));
+        if (Math.abs(nx) > 4 || Math.abs(ny) > 4) dragMoved = true;
+        const now = performance.now();
+        const dt = Math.max(0.001, (now - lastPT) / 1e3);
+        velX = velX * 0.6 + (ev.clientX - lastPX) / dt * 0.4;
+        velY = velY * 0.6 + (ev.clientY - lastPY) / dt * 0.4;
+        lastPX = ev.clientX; lastPY = ev.clientY; lastPT = now;
+        writeOffset(baseX + nx, baseY + ny);
+      });
+
+      const endDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        objectEl.classList.remove("dragging");
+        objectEl.classList.add("just-dropped");
+        clearTimeout(dropTimer);
+        dropTimer = setTimeout(() => objectEl.classList.remove("just-dropped"), 1800);
+        document.body.classList.remove("is-grabbing");
+        if (cfg.dragReturn) returnSpring();
+        kick();
+      };
+      on(objectEl, "pointerup", endDrag);
+      on(objectEl, "pointercancel", endDrag);
+      on(objectEl, "click", ev => { if (dragMoved) { ev.preventDefault(); ev.stopPropagation(); } }, true);
+      on(objectEl, "pointerleave", () => { if (!dragging) setIdleCaption(); });
+
+      function gravityStep(dt) {
+        if (!cfg.gravityWords || !engaged || !words.length) return;
+        const box = glCanvas.getBoundingClientRect();
+        const hx = box.left + box.width / 2 + scrollX;
+        const hy = box.top  + box.height / 2 + scrollY;
+        const g  = SHADOW_FRAC * box.height * 1.02;
+        for (const w of words) {
+          const cx = w.cx + w.x, cy = w.cy + w.y;
+          const dx = hx - cx, dy = hy - cy;
+          const dist = Math.hypot(dx, dy) || 0.001;
+          if (w.captured) {
+            if (dist > g * 2.2) { w.captured = false; w.vx = w.vy = 0; }
+            else {
+              w.x = hx - w.cx; w.y = hy - w.cy;
+              w.op += (0 - w.op) * 0.25;
+              w.sx = w.sy = Math.max(0.15, w.sx * 0.9);
+            }
+          } else {
+            const soft = Math.max(dist, g * 0.6);
+            const pull = GM_PULL / (soft * soft);
+            const fx = pull * dx / dist - 7 * w.x - GW_DAMP * w.vx;
+            const fy = pull * dy / dist - 7 * w.y - GW_DAMP * w.vy;
+            w.vx += fx * dt; w.vy += fy * dt;
+            const speed = Math.hypot(w.vx, w.vy);
+            if (speed > GW_MAX_SPEED) { w.vx *= GW_MAX_SPEED / speed; w.vy *= GW_MAX_SPEED / speed; }
+            w.x += w.vx * dt; w.y += w.vy * dt;
+            const ang = (dx * w.vy - dy * w.vx) / (dist * dist);
+            w.spin += (ang * 57.3 * 0.6 - w.spin) * 0.1 - w.rot * 0.02;
+            w.rot  += w.spin * dt;
+            w.rot  *= 0.995;
+            const fade  = Math.min(1, Math.max(0, (dist - g * 0.9) / (g * 0.8)));
+            const scale = 0.25 + 0.75 * fade;
+            w.sx += (scale - w.sx) * 0.2; w.sy = w.sx;
+            w.op += (fade  - w.op) * 0.2;
+            if (dist < g * 0.85) w.captured = true;
+          }
+          const moved = Math.abs(w.x) > 0.05 || Math.abs(w.y) > 0.05 ||
+                        Math.abs(w.sx - 1) > 0.002 || Math.abs(w.rot) > 0.1;
+          if (moved) {
+            w.el.style.transform = `translate(${w.x.toFixed(1)}px, ${w.y.toFixed(1)}px) rotate(${w.rot.toFixed(1)}deg) scale(${w.sx.toFixed(3)}, ${w.sy.toFixed(3)})`;
+            w.el.style.opacity = w.op.toFixed(3);
+            w.active = true;
+          } else if (w.active) {
+            w.el.style.transform = ""; w.el.style.opacity = ""; w.active = false;
+          }
+        }
+      }
+
+      let raf = 0, inView = true, paused = false;
+      let last = performance.now(), t0 = performance.now();
+      const shouldRun = () => gl && program && !paused && !reduceMQ.matches && !document.hidden && (inView || dragging);
+      function drawOnce() {
+        if (!gl || !program) return;
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(uTime, (performance.now() - t0) / 1e3);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      }
+      function frame(now) {
+        if (!glCanvas.isConnected) { raf = 0; return; }
+        const dt = Math.min(0.033, (now - last) / 1e3); last = now;
+        drawOnce();
+        gravityStep(dt);
+        raf = shouldRun() ? requestAnimationFrame(frame) : 0;
+      }
+      function kick() { if (!raf && shouldRun()) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+
+      const io = new IntersectionObserver(([entry]) => {
+        inView = entry.isIntersecting;
+        if (inView) kick();
+        else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      });
+      io.observe(objectEl);
+
+      on(document, "visibilitychange", () => {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        kick();
+      });
+      on(reduceMQ, "change", () => {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        drawOnce();
+      });
+
+      const ro = new ResizeObserver(() => { sizeCanvases(); drawRays(); drawOnce(); });
+      ro.observe(glCanvas);
+
+      let resizeTimer = 0;
+      on(window, "resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(measureWords, 150);
+      });
+
+      sizeCanvases();
+      drawRays();
+      drawOnce();
+      kick();
+
+      return {
+        play()  { paused = false; kick(); },
+        pause() { paused = true; if (raf) { cancelAnimationFrame(raf); raf = 0; } },
+        setLook(lookName) {
+          cfg.look = lookName;
+          objectEl.dataset.look = lookName;
+          uploadLook(lookName);
+          drawOnce();
+        },
+        redrawRays: drawRays,
+        destroy() {
+          if (raf) cancelAnimationFrame(raf);
+          if (returnRaf) cancelAnimationFrame(returnRaf);
+          clearTimeout(dropTimer);
+          clearTimeout(resizeTimer);
+          io.disconnect();
+          ro.disconnect();
+          for (const [t, type, fn, o] of listeners) t.removeEventListener(type, fn, o);
+          for (const w of words) { w.el.style.transform = ""; w.el.style.opacity = ""; }
+          objectEl.style.removeProperty("--dx");
+          objectEl.style.removeProperty("--dy");
+          gl?.getExtension("WEBGL_lose_context")?.loseContext();
+        }
+      };
+    }
+
+    const hero = initBlackHoleHero(document.getElementById("hero"), {
+      look: "zen",
+      interactive: true,
+      gravityWords: true,
+      dragReturn: true,
+      captionIdle: "TON 618 · DRAG EVENT HORIZON"
+    });
+
+    const lookOrder = ["zen", "quasar", "gargantua", "defaults"];
+    let lookIdx = 0;
+    presetBtn.addEventListener("click", () => {
+      lookIdx = (lookIdx + 1) % lookOrder.length;
+      const nextLook = lookOrder[lookIdx];
+      hero?.setLook(nextLook);
+      presetBtn.textContent = `look: ${nextLook}`;
+      presetBtn.setAttribute("aria-label", `Cycle black hole look preset, currently ${nextLook}`);
+    });
+  </script>
+</body>
+</html>
